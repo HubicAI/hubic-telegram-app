@@ -29,14 +29,7 @@ const Profile: FC<ProfileProps> = () => {
       // Select and copy text
       textArea.focus();
       textArea.select();
-
-      // Try using the new API first
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(referralLink);
-      } else {
-        // Fallback for older browsers
-        document.execCommand('copy');
-      }
+      document.execCommand('copy');
 
       // Remove temporary textarea
       document.body.removeChild(textArea);
