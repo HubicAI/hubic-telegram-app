@@ -31,7 +31,7 @@ const Profile: FC<ProfileProps> = () => {
           readOnly
         />
         <p className="text-[8px] leading-[10.24px] text-[#D9D9D9] font-[700]">
-          Must be between 3 and 15 alphanumeric characters
+          Your official Telegram username
         </p>
       </div>
 

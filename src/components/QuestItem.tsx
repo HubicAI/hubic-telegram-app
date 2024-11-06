@@ -54,11 +54,11 @@ const QuestItem: FC<QuestItemProps> = ({
     try {
       // Handle referral type differently
       if (type.toLowerCase() === "refer") {
-        const botUsername = "YOUR_BOT_USERNAME"; // Replace with your actual bot username
+        const botUsername = "DAETA_FirestarterBot"; // Replace with your actual bot username
         const referralLink = `https://t.me/${botUsername}?start=${userId}`;
         
         // Open Telegram share dialog
-        const shareText = encodeURIComponent(`Join DaeTa using my referral link:\n${referralLink}`);
+        const shareText = encodeURIComponent(`Check this out!\n\nDÆTA launched the LVRG Firestarter Whitelist app.\n\nJoin by using my referral link:`);
         const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${shareText}`;
         
         window.open(telegramShareUrl, "_blank");
@@ -124,7 +124,7 @@ const QuestItem: FC<QuestItemProps> = ({
           {/*<img src={ArrowSvg} alt="arrow Img" className="pl-1" />*/}
         </p>
       </div>
-      <span className="text-[14px] text-[#F7FF98] font-[700] leading-[17.92px]">
+      <span className="text-[14px] text-[#01F079] font-[700] leading-[17.92px]">
         {isActive ? "Done" : <>+{price}</>}
       </span>
     </div>

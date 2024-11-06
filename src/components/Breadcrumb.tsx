@@ -14,9 +14,9 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ title, description }) => {
       >
         {title}
       </h1>
-      <p className="font-[700] text-[12px] leading-[15.36px] text-[#D9D9D9]">
+      {/*<p className="font-[700] text-[12px] leading-[15.36px] text-[#D9D9D9]">
         {description}
-      </p>
+      </p>*/}
     </div>
   );
 };

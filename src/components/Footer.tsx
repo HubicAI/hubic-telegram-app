@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-import Quest_active from "../assets/quest_white.png";
+import Quest_active from "../assets/quest_white.svg";
 import Quest_inactive from "../assets/quest_w.svg";
 import Rank_active from "../assets/rank_yellow.svg";
 import Rank_inactive from "../assets/rank.svg";
@@ -14,7 +14,7 @@ const Footer: FC<FooterProps> = () => {
   const location = useLocation();
 
   return (
-    <div className="fixed bottom-6 left-0 w-full bg-transparent flex justify-between px-10 z-100">
+    <div className="fixed bottom-6 left-0 w-full bg-transparent flex gap-1 px-10 z-100">
       <Link to={"/"}>
         <div
           className={`btn rounded-[8px] w-[96px] h-[43px] flex items-center justify-center font-[700] text-[10px] leading-[12.8px] gap-1 ${
