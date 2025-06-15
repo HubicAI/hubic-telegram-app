@@ -90,7 +90,7 @@ const Profile: FC<ProfileProps> = () => {
           value={`https://t.me/DAETA_FirestarterBot?start=${user?.username}`}
         />
         <button
-          className="bg-[#F7FF98] rounded-[8px] py-[16px] text-[#1C1C1C] font-[700] text-[9px] leading-[11.52px] mt-2"
+          className="bg-[#E879F9] rounded-[8px] py-[16px] text-[#1C1C1C] font-[700] text-[9px] leading-[11.52px] mt-2"
           onClick={copyToClipboard}
         >
           Copy Referral link

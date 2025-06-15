@@ -59,7 +59,7 @@ const Quest: FC<QuestProps> = () => {
 
       <div className="mt-6 flex gap-2 font-[700] text-[12px] leading-[15.36px]">
         <span className="text-[#D9D9D9]">Earned Firestarter points:</span>
-        <span className="text-[#F7FF98]">{user ? user.points : 0}</span>
+        <span className="text-[#E879F9]">{user ? user.points : 0}</span>
       </div>
 
       <div className="quest-board flex flex-col gap-3 pb-20">

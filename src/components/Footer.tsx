@@ -1,91 +1,81 @@
 import type { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { MdRequestQuote } from "react-icons/md";
+import { FaRankingStar } from "react-icons/fa6";
+import { FaUser } from "react-icons/fa";
+import { PiSpinnerBallFill } from "react-icons/pi";
+import type { IconType } from "react-icons";
 
-import Quest_active from "../assets/quest_white.svg";
-import Quest_inactive from "../assets/quest_w.svg";
-import Rank_active from "../assets/rank_yellow.svg";
-import Rank_inactive from "../assets/rank.svg";
-import Profile_active from "../assets/profile_yellow.svg";
-import Profile_inactive from "../assets/profile_white.svg";
+interface NavItem {
+    to: string;
+    label: string;
+    icon: IconType;
+    alt: string;
+}
 
 interface FooterProps {}
 
 const Footer: FC<FooterProps> = () => {
-  const location = useLocation();
+    const location = useLocation();
 
-  return (
-    <div className="fixed bottom-6 left-0 w-full bg-transparent flex gap-1 px-10 z-100">
-      <Link to={"/"}>
-        <div
-          className={`btn rounded-[8px] w-[96px] h-[43px] flex items-center justify-center font-[700] text-[10px] leading-[12.8px] gap-1 ${
-            location.pathname === "/" ? "text-[#F7FF98]" : "text-[#D9D9D9]"
-          } bg-[#3A3B3F]`}
-          style={{
-            border: `${
-              location.pathname === "/"
-                ? "1px solid #F7FF98"
-                : "1px solid #D9D9D9"
-            }`,
-          }}
-        >
-          <img
-            src={location.pathname === "/" ? Quest_active : Quest_inactive}
-            className="w-[22px] h-[22px]"
-            alt="Quest Logo"
-          />
-          Quest
+    const navItems: NavItem[] = [
+        {
+            to: "/",
+            label: "Quest",
+            icon: MdRequestQuote,
+            alt: "Quest Icon",
+        },
+        {
+            to: "/rank",
+            label: "Ranks",
+            icon: FaRankingStar,
+            alt: "Ranks Icon",
+        },
+        {
+            to: "/profile",
+            label: "Profile",
+            icon: FaUser,
+            alt: "Profile Icon",
+        },
+        {
+            to: "/spinwheel",
+            label: "Spin",
+            icon: PiSpinnerBallFill,
+            alt: "Spin Icon",
+        },
+    ];
+
+    return (
+        <div className="flex justify-center w-full py-3 px-4 z-[100]">
+            <div className="flex justify-between items-center gap-2 w-full max-w-[400px]">
+                {navItems.map((item) => {
+                    const IconComponent = item.icon as React.FC<{ size?: number; color?: string }>;
+                    return (
+                        <Link
+                            key={item.to}
+                            to={item.to}
+                            className="flex-1"
+                        >
+                            <div
+                                className={`flex items-center justify-center gap-1.5 rounded-lg h-[43px] font-bold text-[10px] leading-[12.8px] transition-colors ${
+                                    location.pathname === item.to
+                                        ? "bg-[#3A3B3F] text-[#E879F9] border border-[#E879F9]"
+                                        : "bg-[#3A3B3F] text-[#D9D9D9] border border-[#D9D9D9]"
+                                }`}
+                                aria-label={item.alt}
+                            >
+                                <IconComponent
+                                    size={20}
+                                    color={location.pathname === item.to ? "#E879F9" : "#D9D9D9"}
+                                />
+                                {item.label}
+                            </div>
+                        </Link>
+                    );
+                })}
+            </div>
         </div>
-      </Link>
-      <Link to={"/rank"}>
-        <div
-          className={`btn rounded-[8px] w-[96px] h-[43px] flex items-center justify-center font-[700] text-[10px] leading-[12.8px] gap-1 ${
-            location.pathname === "/rank" ? "text-[#F7FF98]" : "text-[#D9D9D9]"
-          } bg-[#3A3B3F]`}
-          style={{
-            border: `${
-              location.pathname === "/rank"
-                ? "1px solid #F7FF98"
-                : "1px solid #D9D9D9"
-            }`,
-          }}
-        >
-          <img
-            src={location.pathname === "/rank" ? Rank_active : Rank_inactive}
-            className="w-[19px] h-[19px]"
-            alt="Quest Logo"
-          />
-          Ranks
-        </div>
-      </Link>
-      <Link to={"/profile"}>
-        <div
-          className={`btn rounded-[8px] w-[96px] h-[43px] flex items-center justify-center font-[700] text-[10px] leading-[12.8px] gap-1 ${
-            location.pathname === "/profile"
-              ? "text-[#F7FF98]"
-              : "text-[#D9D9D9]"
-          } bg-[#3A3B3F]`}
-          style={{
-            border: `${
-              location.pathname === "/profile"
-                ? "1px solid #F7FF98"
-                : "1px solid #D9D9D9"
-            }`,
-          }}
-        >
-          <img
-            src={
-              location.pathname === "/profile"
-                ? Profile_active
-                : Profile_inactive
-            }
-            className="w-[17px] h-[17px]"
-            alt="Quest Logo"
-          />
-          Profiles
-        </div>
-      </Link>
-    </div>
-  );
+    );
 };
 
 export default Footer;

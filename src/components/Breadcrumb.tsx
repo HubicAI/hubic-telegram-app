@@ -9,7 +9,7 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ title, description }) => {
   return (
     <div className="flex flex-col">
       <h1
-        className="text-[33px] font-[700] leading-[48.87px] text-[#F7FF98]"
+        className="text-[33px] font-[700] leading-[48.87px] text-[#E879F9]"
         style={{ fontFamily: "Space Mono" }}
       >
         {title}

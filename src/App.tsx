@@ -8,29 +8,39 @@ import Logo from "./components/Logo";
 import Quest from "./pages/Quest";
 import Profile from "./pages/Profile";
 import Leaderboard from "./pages/Leaderboard";
+import SpinWheel from "./pages/Spin";
 import Footer from "./components/Footer";
 
 function App() {
-  const [searchParams] = useSearchParams();
-  const userQueryParam = searchParams.get("user");
+    const [searchParams] = useSearchParams();
+    const userQueryParam = searchParams.get("user");
 
-  if (userQueryParam) {
-    localStorage.setItem("userid", userQueryParam);
-  }
+    if (userQueryParam) {
+        localStorage.setItem("userid", userQueryParam);
+    }
 
-  return (
-    <div className="App-header space-y-6">
-      <AppProvider>
-        <Logo />
-        <Routes>
-          <Route path="/" element={<Quest />}></Route>
-          <Route path="/profile" element={<Profile />}></Route>
-          <Route path="/rank" element={<Leaderboard />}></Route>
-        </Routes>
-        <Footer />
-      </AppProvider>
-    </div>
-  );
+    return (
+        <div className="flex flex-col items-center min-h-screen bg-[#000000]">
+            <AppProvider>
+                <div className="flex flex-col items-center w-full max-w-[400px] min-h-screen">
+                    <header className="w-full flex justify-center py-4">
+                        <Logo />
+                    </header>
+                    <main className="flex-1 w-full overflow-y-auto px-4 py-6">
+                        <Routes>
+                            <Route path="/" element={<Quest />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/rank" element={<Leaderboard />} />
+                            <Route path="/spinwheel" element={<SpinWheel />} />
+                        </Routes>
+                    </main>
+                    <footer className="w-full shadow-inner">
+                        <Footer />
+                    </footer>
+                </div>
+            </AppProvider>
+        </div>
+    );
 }
 
 export default App;
