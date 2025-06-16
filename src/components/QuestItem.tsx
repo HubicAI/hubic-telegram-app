@@ -54,7 +54,7 @@ const QuestItem: FC<QuestItemProps> = ({
         try {
             // Handle referral type differently
             if (type.toLowerCase() === "refer") {
-                const botUsername = "DAETA_FirestarterBot"; // Replace with your actual bot username
+                const botUsername = "hubic_ai_bot"; // Replace with your actual bot username
                 const referralLink = `https://t.me/${botUsername}?start=${userId}`;
 
                 // Open Telegram share dialog

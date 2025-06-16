@@ -185,7 +185,7 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ onSpinEnd, targetSegmentIndex }) 
             <button
                 onClick={spin}
                 disabled={isSpinning}
-                className={`mt-6 px-6 py-3 text-base font-bold text-white rounded-xl shadow-lg transition-all duration-300 ${isSpinning
+                className={`mt-6 px-6 py-3 text-[14px] font-bold text-white rounded-[8px] shadow-lg transition-all duration-300 ${isSpinning
                     ? 'bg-gray-500 cursor-not-allowed'
                     : 'bg-[#E879F9]  active:scale-95'
                     }`}
