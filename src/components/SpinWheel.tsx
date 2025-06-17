@@ -1,218 +1,229 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from "react"
+import { useState } from "react"
+import { motion } from "framer-motion"
 
-interface WheelSegment {
-    label: string;
-    points: number;
-    color: string;
-}
+const segments = [
+    { value: 100, color: "#FF0040", textColor: "white", label: "$100" },
+    { value: 200, color: "#FF6600", textColor: "white", label: "$200" },
+    { value: 300, color: "#FFD700", textColor: "white", label: "$300" },
+    { value: 400, color: "#00BFFF", textColor: "white", label: "$400" },
+    { value: 500, color: "#00FFFF", textColor: "white", label: "$500" },
+    { value: 600, color: "#00FF40", textColor: "white", label: "$600" },
+    { value: 700, color: "#8000FF", textColor: "white", label: "$700" },
+    { value: 800, color: "#FF1493", textColor: "white", label: "$800" },
+]
 
 interface SpinWheelProps {
-    onSpinEnd: (segment: WheelSegment) => void;
-    targetSegmentIndex?: number; // Optional index to predetermine spin result
+    onSpinEnd: (value: number) => void
+    locked?: boolean
 }
 
-const SpinWheel: React.FC<SpinWheelProps> = ({ onSpinEnd, targetSegmentIndex }) => {
-    const [rotation, setRotation] = useState<number>(0);
-    const [isSpinning, setIsSpinning] = useState<boolean>(false);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [canvasSize, setCanvasSize] = useState<number>(300); // Default size, will be adjusted
+const SpinWheel: React.FC<SpinWheelProps> = ({ onSpinEnd, locked = false }) => {
+    const [isSpinning, setIsSpinning] = useState(false)
+    const [rotation, setRotation] = useState(0)
+    const [result, setResult] = useState<number>(0)
 
-    const segments: WheelSegment[] = [
-        { label: 'Jackpot', points: 100, color: '#FFD700' }, // Vibrant Gold
-        { label: 'Double', points: 50, color: '#FF69B4' }, // Hot Pink
-        { label: 'Bonus', points: 30, color: '#00CED1' }, // Dark Turquoise
-        { label: 'Extra Spin', points: 20, color: '#ADFF2F' }, // Lime Green
-        { label: 'Try Again', points: 10, color: '#FF4500' }, // Orange Red
-        { label: 'Lucky', points: 40, color: '#9932CC' }, // Dark Orchid
-    ];
+    const getWinningSegment = (finalRotation: number) => {
+        // Normalize rotation to 0-360 degrees
+        const normalizedRotation = ((finalRotation % 360) + 360) % 360
 
-    // Adjust canvas size based on container width
-    useEffect(() => {
-        const updateCanvasSize = () => {
-            if (containerRef.current) {
-                const containerWidth = containerRef.current.offsetWidth;
-                const size = Math.min(containerWidth - 32, 360); // Account for 2rem padding + 8px border
-                setCanvasSize(size);
-            }
-        };
+        // Each segment is 45 degrees (360/8 segments)
+        const segmentAngle = 360 / segments.length
 
-        updateCanvasSize();
-        window.addEventListener('resize', updateCanvasSize);
-        return () => window.removeEventListener('resize', updateCanvasSize);
-    }, []);
+        // The pin points to the top (0 degrees)
+        // We need to find which segment is at the top position
+        // Since segments start at -90 degrees (top), we need to adjust
+        const segmentIndex = Math.floor((360 - normalizedRotation) / segmentAngle) % segments.length
 
-    const drawWheel = (ctx: CanvasRenderingContext2D, rotation: number) => {
-        const canvas = ctx.canvas;
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const radius = canvas.width / 2 - 10;
-        const arc = (2 * Math.PI) / segments.length;
+        // Return the winning segment
+        return segments[segmentIndex]
+    }
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const handleSpin = () => {
+        if (isSpinning || locked) return
 
-        // Draw segments with gradient
-        segments.forEach((segment, i) => {
-            const gradient = ctx.createRadialGradient(
-                centerX, centerY, radius * 0.3,
-                centerX, centerY, radius
-            );
-            gradient.addColorStop(0, '#FFFFFF');
-            gradient.addColorStop(1, segment.color);
+        setIsSpinning(true)
+        setResult(0) // Clear previous result
 
-            ctx.beginPath();
-            ctx.fillStyle = gradient;
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(
-                centerX,
-                centerY,
-                radius,
-                i * arc + (rotation * Math.PI) / 180,
-                (i + 1) * arc + (rotation * Math.PI) / 180
-            );
-            ctx.lineTo(centerX, centerY);
-            ctx.fill();
+        const newRotation = rotation + 3600 + Math.random() * 720 // 10-12 rounds
+        setRotation(newRotation)
 
-            // Draw text with shadow for better contrast
-            ctx.save();
-            ctx.translate(centerX, centerY);
-            ctx.rotate(i * arc + arc / 2 + (rotation * Math.PI) / 180);
-            ctx.fillStyle = '#1F2937';
-            ctx.shadowColor = '#FFFFFF';
-            ctx.shadowBlur = 4;
-            ctx.font = `bold ${canvasSize * 0.04}px Inter, sans-serif`;
-            ctx.textAlign = 'right';
-            ctx.fillText(`${segment.label} (${segment.points} pts)`, radius - 15, 5);
-            ctx.restore();
-        });
+        setTimeout(() => {
+            setIsSpinning(false)
 
-        // Draw circular axis with solid color
-        const axisRadius = canvasSize * 0.1; // Axis circle radius
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, axisRadius, 0, 2 * Math.PI);
-        ctx.fillStyle = '#4B5563'; // Solid dark gray
-        ctx.fill();
-        ctx.strokeStyle = '#D1D5DB';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Draw fixed pointer as a triangle on the circle's right edge, pointing right (90°)
-        ctx.beginPath();
-        ctx.moveTo(centerX + axisRadius + 10, centerY); // Right point of triangle
-        ctx.lineTo(centerX + axisRadius - 5, centerY - 8); // Top left
-        ctx.lineTo(centerX + axisRadius - 5, centerY + 8); // Bottom left
-        ctx.closePath();
-        ctx.fillStyle = '#E879F9'; // Match canvas border
-        ctx.fill();
-        ctx.strokeStyle = '#D1D5DB';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-    };
-
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (canvas) {
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-                drawWheel(ctx, rotation);
-            }
-        }
-    }, [rotation, canvasSize]);
-
-    const spin = () => {
-        if (isSpinning) return;
-        setIsSpinning(true);
-
-        const segmentAngle = 360 / segments.length;
-        let finalAngle: number;
-
-        if (targetSegmentIndex !== undefined && targetSegmentIndex >= 0 && targetSegmentIndex < segments.length) {
-            // Center of target segment aligned with right pointer (90°)
-            const segmentCenterAngle = targetSegmentIndex * segmentAngle + segmentAngle / 2;
-            finalAngle = rotation + 3600 - (segmentCenterAngle - 90); // 10 full spins, land on target
-        } else {
-            // Random spin
-            finalAngle = rotation + Math.floor(Math.random() * 360) + 3600; // 10 full spins
-        }
-
-        const duration = 6000;
-        const startTime = performance.now();
-        const startRotation = rotation;
-
-        const easeInOut = (t: number) => {
-            if (t < 0.2) {
-                return 3 * t * t * t;
-            } else if (t < 0.5) {
-                return 0.024 + (t - 0.2) * 1.8;
-            } else {
-                const u = 1 - (t - 0.2) / 0.5;
-                return 1 - 0.5 * u * u * u * u;
-            }
-        };
-
-        const animate = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const easedProgress = easeInOut(progress);
-            setRotation(startRotation + (finalAngle - startRotation) * easedProgress);
-
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            } else {
-                setIsSpinning(false);
-                const normalizedAngle = finalAngle % 360;
-                // Segment under the right pointer (90°)
-                const adjustedAngle = ((-normalizedAngle + 90) % 360 + 360) % 360;
-                const segmentIndex = Math.floor(adjustedAngle / segmentAngle);
-                onSpinEnd(segments[segmentIndex]);
-            }
-        };
-
-        requestAnimationFrame(animate);
-    };
+            // Calculate and display the winning segment
+            const winningSegment = getWinningSegment(newRotation)
+            setResult(winningSegment.value)
+            onSpinEnd(winningSegment.value)
+        }, 4000) // Longer animation time
+    }
 
     return (
         <div
-            ref={containerRef}
-            className="flex flex-col items-center justify-center w-full max-w-[400px] p-4 bg-transparent rounded-2xl shadow-2xl"
+            className={`flex flex-col items-center mb-8 ${isSpinning ? "cursor-not-allowed" : "cursor-pointer"}`}
+            onClick={handleSpin}
         >
-            <canvas
-                ref={canvasRef}
-                width={canvasSize}
-                height={canvasSize}
-                className="border-4 border-[#E879F9] rounded-full shadow-inner transition-transform duration-500 hover:scale-105"
-            />
-            <button
-                onClick={spin}
-                disabled={isSpinning}
-                className={`mt-6 px-6 py-3 text-[14px] font-bold text-white rounded-[8px] shadow-lg transition-all duration-300 ${isSpinning
-                    ? 'bg-gray-500 cursor-not-allowed'
-                    : 'bg-[#E879F9]  active:scale-95'
-                    }`}
+            <motion.div
+                className="flex relative"
+                animate={{
+                    scale: isSpinning ? [1, 1.02, 1, 1.01, 1] : 1,
+                }}
+                transition={{
+                    scale: { duration: 0.4, repeat: isSpinning ? 2 : 0, ease: "easeInOut" },
+                }}
             >
-                {isSpinning ? (
-                    <span className="flex items-center">
-                        <svg
-                            className="w-4 h-4 mr-2 animate-spin"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M4 12a8 8 0 018-8v8h8a8 8 0 01-8 8 8 8 0 01-8-8z"
-                            />
-                        </svg>
-                        Spinning...
-                    </span>
-                ) : (
-                    'Spin Now'
-                )}
-            </button>
-        </div>
-    );
-};
+                {/* Outer Gradient Border */}
+                <div
+                    className="relative p-[3px] rounded-full"
+                    style={{
+                        background:
+                            "linear-gradient(45deg, #0066FF, #1E90FF, #FFD700, #FF8C00, #FF1493, #8A2BE2, #00CED1, #32CD32)",
+                    }}
+                >
+                    {/* Pin-shaped Pointer - Merged with outer border */}
+                    <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 z-20">
+                        <div className="relative">
+                            {/* Pin body - longer and with gradient matching outer border */}
+                            <div
+                                className="w-4 h-12 rounded-t-full"
+                                style={{
+                                    background: "linear-gradient(180deg, #FFD700, #FF8C00, #FF1493)",
+                                }}
+                            ></div>
+                            {/* Triangle point at the bottom */}
+                            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                                <div
+                                    className="w-0 h-0"
+                                    style={{
+                                        borderLeft: "8px solid transparent",
+                                        borderRight: "8px solid transparent",
+                                        borderTop: "12px solid #FF1493",
+                                    }}
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
 
-export default SpinWheel;
+                    {/* Middle Border (Dark and Thick) */}
+                    <div className="relative p-4 rounded-full bg-gradient-to-br from-black via-gray-600 to-black">
+                        {/* Inner Gradient Border */}
+                        <div
+                            className="relative p-1 rounded-full"
+                            style={{
+                                background:
+                                    "linear-gradient(135deg, #8A2BE2, #FF1493, #FF8C00, #FFD700, #1E90FF, #0066FF, #00CED1, #32CD32)",
+                            }}
+                        >
+                            {/* Spin Wheel Container */}
+                            <div
+                                className="relative w-80 h-80 rounded-full overflow-hidden"
+                                style={{
+                                    boxShadow: "inset 0 0 120px rgba(0, 0, 0, 0.9), inset 0 0 200px rgba(0, 0, 0, 0.7)",
+                                }}
+                            >
+                                {/* Spinning Wheel */}
+                                <motion.div
+                                    className="w-full h-full relative"
+                                    animate={{ rotate: rotation }}
+                                    transition={{ duration: 4, ease: "easeOut" }}
+                                >
+                                    <div
+                                        className="w-full h-full rounded-full"
+                                        style={{
+                                            boxShadow:
+                                                "inset 0 0 160px rgba(0, 0, 0, 0.95), inset 0 0 240px rgba(0, 0, 0, 0.8), inset 0 0 320px rgba(0, 0, 0, 0.6)",
+                                        }}
+                                    >
+                                        <svg width="320" height="320" viewBox="0 0 320 320" className="w-full h-full">
+                                            <defs>
+                                                <radialGradient id="radialShadow" cx="50%" cy="50%" r="50%">
+                                                    <stop offset="0%" stopColor="rgba(0,0,0,0)" />
+                                                    <stop offset="30%" stopColor="rgba(0,0,0,0.1)" />
+                                                    <stop offset="60%" stopColor="rgba(0,0,0,0.4)" />
+                                                    <stop offset="80%" stopColor="rgba(0,0,0,0.7)" />
+                                                    <stop offset="100%" stopColor="rgba(0,0,0,0.9)" />
+                                                </radialGradient>
+                                            </defs>
+                                            {segments.map((segment, index) => {
+                                                const angle = (360 / segments.length) * index
+                                                const nextAngle = (360 / segments.length) * (index + 1)
+                                                const startAngle = (angle - 90) * (Math.PI / 180)
+                                                const endAngle = (nextAngle - 90) * (Math.PI / 180)
+
+                                                const x1 = 160 + 160 * Math.cos(startAngle)
+                                                const y1 = 160 + 160 * Math.sin(startAngle)
+                                                const x2 = 160 + 160 * Math.cos(endAngle)
+                                                const y2 = 160 + 160 * Math.sin(endAngle)
+
+                                                const largeArcFlag = nextAngle - angle > 180 ? 1 : 0
+
+                                                const pathData = [
+                                                    `M 160 160`,
+                                                    `L ${x1} ${y1}`,
+                                                    `A 160 160 0 ${largeArcFlag} 1 ${x2} ${y2}`,
+                                                    "Z",
+                                                ].join(" ")
+
+                                                // Text position
+                                                const textAngle = (angle + nextAngle) / 2
+                                                const textRadius = 110
+                                                const textX = 160 + textRadius * Math.cos((textAngle - 90) * (Math.PI / 180))
+                                                const textY = 160 + textRadius * Math.sin((textAngle - 90) * (Math.PI / 180))
+
+                                                return (
+                                                    <g key={index}>
+                                                        <path d={pathData} fill={segment.color} />
+                                                        <path d={pathData} fill="url(#radialShadow)" opacity="0.8" />
+                                                        <text
+                                                            x={textX}
+                                                            y={textY}
+                                                            fill={segment.textColor}
+                                                            fontSize="18"
+                                                            fontWeight="bold"
+                                                            textAnchor="middle"
+                                                            dominantBaseline="middle"
+                                                            transform={`rotate(${textAngle}, ${textX}, ${textY})`}
+                                                        >
+                                                            {segment.label}
+                                                        </text>
+                                                    </g>
+                                                )
+                                            })}
+                                        </svg>
+                                    </div>
+
+                                    {/* Axis (Center Circle with Gradient Border) */}
+                                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                        <div
+                                            className="w-16 h-16 rounded-full p-0.5"
+                                            style={{
+                                                background: "linear-gradient(90deg, #0066FF, #1E90FF, #FFD700, #FF8C00, #FF1493, #8A2BE2)",
+                                            }}
+                                        >
+                                            <div
+                                                className="w-full h-full rounded-full"
+                                                style={{
+                                                    background: "radial-gradient(circle, #333333 0%, #000000 70%, #000000 100%)",
+                                                }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
+            {/* Spin Button */}
+            {/* <button
+                onClick={handleSpin}
+                disabled={isSpinning}
+                className="mt-8 px-8 py-3 rounded-[8px] text-[14px] text-white bg-[#E879F9] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+                {isSpinning ? "Spinning..." : "SPIN"}
+            </button> */}
+        </div>
+    )
+}
+
+export default SpinWheel
