@@ -106,7 +106,7 @@ const QuestItem: FC<QuestItemProps> = ({
 
     return (
         <div
-            className="flex rounded-[8px] w-full h-fit p-[15px] justify-between cursor-pointer hover:opacity-90 transition-opacity"
+            className="flex bg-white bg-opacity-20 backdrop-blur-[2px] rounded-[8px] w-full h-fit p-[15px] justify-between cursor-pointer hover:opacity-90 transition-opacity border-opacity-20"
             style={{
                 border: "0.5px solid #D9D9D9",
             }}
@@ -119,7 +119,7 @@ const QuestItem: FC<QuestItemProps> = ({
                 <p className="font-[700] text-[12px] leading-[15.36px] text-[#E879F9]">
                     {title}
                 </p>
-                <p className="flex justify-center items-center font-[700] text-[10px] leading-[15.36px] text-[#D9D9D9]">
+                <p className="flex justify-center items-center text-[14px] leading-[15.36px] text-[#D9D9D9]">
                     <span>{description}</span>
                     {/*<img src={ArrowSvg} alt="arrow Img" className="pl-1" />*/}
                 </p>

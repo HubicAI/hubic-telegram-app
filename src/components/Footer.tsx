@@ -21,6 +21,12 @@ const Footer: FC<FooterProps> = () => {
     const navItems: NavItem[] = [
         {
             to: "/",
+            label: "Spin",
+            icon: PiSpinnerBallFill,
+            alt: "Spin Icon",
+        },
+        {
+            to: "/quest",
             label: "Quest",
             icon: MdRequestQuote,
             alt: "Quest Icon",
@@ -36,12 +42,6 @@ const Footer: FC<FooterProps> = () => {
             label: "Profile",
             icon: FaUser,
             alt: "Profile Icon",
-        },
-        {
-            to: "/spinwheel",
-            label: "Spin",
-            icon: PiSpinnerBallFill,
-            alt: "Spin Icon",
         },
     ];
 

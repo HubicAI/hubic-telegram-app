@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { FaCopy } from "react-icons/fa";
+import { toast } from "react-toastify";
 import Breadcrumb from "../components/Breadcrumb";
 import { useProvider } from "../provider/AppProvider";
-import { useSnackbar } from "notistack";
 
 interface ProfileProps { }
 
@@ -10,7 +10,6 @@ const FaCopyIcon = FaCopy as React.FC<{ color: string; size: number }>;
 
 const Profile: React.FC<ProfileProps> = () => {
     const { user, getUser } = useProvider();
-    const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         if (!localStorage.getItem("userid")) return;
@@ -21,32 +20,10 @@ const Profile: React.FC<ProfileProps> = () => {
         const referralLink = `https://t.me/hubic_ai_bot?start=${user?.username}`;
 
         try {
-            // Create temporary textarea
-            const textArea = document.createElement("textarea");
-            textArea.value = referralLink;
-            textArea.style.position = "fixed";
-            textArea.style.left = "-999999px";
-            textArea.style.top = "-999999px";
-            document.body.appendChild(textArea);
-
-            // Select and copy text
-            textArea.focus();
-            textArea.select();
-            document.execCommand('copy');
-
-            // Remove temporary textarea
-            document.body.removeChild(textArea);
-
-            // Show success message
-            enqueueSnackbar("Referral link copied successfully!", {
-                variant: "success",
-                anchorOrigin: { vertical: "top", horizontal: "right" },
-            });
+            await navigator.clipboard.writeText(referralLink)
+            toast("Your referral link copied")
         } catch (error) {
-            enqueueSnackbar("Failed to copy referral link", {
-                variant: "error",
-                anchorOrigin: { vertical: "top", horizontal: "right" },
-            });
+            console.error(error)
         }
     };
 
@@ -61,10 +38,7 @@ const Profile: React.FC<ProfileProps> = () => {
                 <input
                     type="text"
                     placeholder="talhatahir789"
-                    className="bg-[#202221] rounded-[8px] text-white placeholder:text-[#FFFFFF] placeholder:text-[9px] placeholder:font-[700] placeholder:leading-[11.52px] py-[15px] pl-4 text-[12px]"
-                    style={{
-                        border: "0.5px solid #D9D9D9",
-                    }}
+                    className="bg-[#202221] bg-opacity-50 backdrop-blur-[2px] rounded-[8px] text-white placeholder:text-[#FFFFFF] placeholder:text-[9px] placeholder:font-[700] placeholder:leading-[11.52px] py-[15px] pl-4 text-[12px] border-[1px] border-white border-opacity-30"
                     value={user?.username}
                     readOnly
                 />
@@ -86,14 +60,11 @@ const Profile: React.FC<ProfileProps> = () => {
                     type="text"
                     placeholder="Your referral link"
                     disabled
-                    className="bg-[#202221] rounded-[8px] text-white placeholder:text-[#FFFFFF] placeholder:text-[9px] placeholder:font-[700] placeholder:leading-[11.52px] py-[15px] pl-4 text-[12px]"
-                    style={{
-                        border: "0.5px solid #D9D9D9",
-                    }}
+                    className="bg-[#202221] bg-opacity-50 backdrop-blur-[2px] rounded-[8px] text-white placeholder:text-[#FFFFFF] placeholder:text-[9px] placeholder:font-[700] placeholder:leading-[11.52px] py-[15px] pl-4 text-[12px] border-[1px] border-white border-opacity-30"
                     value={`https://t.me/hubic_ai_bot?start=${user?.username}`}
                 />
                 <button
-                    className="flex justify-center items-center gap-2 bg-[#E879F9] rounded-[8px] py-[16px] text-white font-[700] text-[14px] leading-[11.52px] mt-2"
+                    className="flex justify-center items-center gap-2 bg-[#E879F9] shadow-md rounded-[8px] py-[16px] text-white font-[700] text-[14px] leading-[11.52px] mt-2"
                     onClick={copyToClipboard}
                 >
                     <FaCopyIcon color="white" size={20} />

@@ -20,7 +20,7 @@ function App() {
     }
 
     return (
-        <div className="flex flex-col items-center min-h-screen bg-[#000000]">
+        <div className="flex flex-col items-center min-h-screen bg-[#000000] App">
             <AppProvider>
                 <div className="flex flex-col items-center w-full max-w-[400px] min-h-screen">
                     <header className="w-full flex justify-center py-4">
@@ -28,10 +28,10 @@ function App() {
                     </header>
                     <main className="flex-1 w-full overflow-y-auto px-4 py-6">
                         <Routes>
-                            <Route path="/" element={<Quest />} />
-                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/" element={<SpinWheel />} />
+                            <Route path="/quest" element={<Quest />} />
                             <Route path="/rank" element={<Leaderboard />} />
-                            <Route path="/spinwheel" element={<SpinWheel />} />
+                            <Route path="/profile" element={<Profile />} />
                         </Routes>
                     </main>
                     <footer className="w-full shadow-inner">

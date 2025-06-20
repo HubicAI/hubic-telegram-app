@@ -1,5 +1,6 @@
 .App {
-    text-align: center;
+    background-image: url(/src/assets/background.png);
+    background-attachment: fixed;
 }
 
 .App-logo {
@@ -27,6 +28,10 @@
     color: #61dafb;
 }
 
+h1 {
+    font-family: "Space Mono";
+}
+
 @keyframes App-logo-spin {
     from {
         transform: rotate(0deg);
@@ -35,4 +40,9 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+.Toastify__toast {
+    background-color: rgba(18, 18, 18, 0.5);
+    /* filter: blur(5px) !important; */
 }

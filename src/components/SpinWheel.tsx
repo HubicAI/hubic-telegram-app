@@ -1,16 +1,21 @@
 import React from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
+import { useProvider } from "../provider/AppProvider"
+import { toast } from "react-toastify"
+
+// ** import action
+import { getSpinPrize } from "../hooks/api"
 
 const segments = [
-    { value: 100, color: "#FF0040", textColor: "white", label: "$100" },
-    { value: 200, color: "#FF6600", textColor: "white", label: "$200" },
-    { value: 300, color: "#FFD700", textColor: "white", label: "$300" },
-    { value: 400, color: "#00BFFF", textColor: "white", label: "$400" },
-    { value: 500, color: "#00FFFF", textColor: "white", label: "$500" },
-    { value: 600, color: "#00FF40", textColor: "white", label: "$600" },
-    { value: 700, color: "#8000FF", textColor: "white", label: "$700" },
-    { value: 800, color: "#FF1493", textColor: "white", label: "$800" },
+    { value: 500, color: "#FF0040", textColor: "white", label: "500" },
+    { value: 1000, color: "#FF6600", textColor: "white", label: "1000" },
+    { value: 2000, color: "#FFD700", textColor: "white", label: "2000" },
+    { value: 5000, color: "#00BFFF", textColor: "white", label: "5000" },
+    { value: 10000, color: "#00FFFF", textColor: "white", label: "10000" },
+    { value: 20000, color: "#00FF40", textColor: "white", label: "20000" },
+    { value: 50000, color: "#8000FF", textColor: "white", label: "50000" },
+    { value: 100000, color: "#FF1493", textColor: "white", label: "100000" },
 ]
 
 interface SpinWheelProps {
@@ -19,9 +24,12 @@ interface SpinWheelProps {
 }
 
 const SpinWheel: React.FC<SpinWheelProps> = ({ onSpinEnd, locked = false }) => {
+    const { user, getUserSpinData, userSpin } = useProvider()
+
     const [isSpinning, setIsSpinning] = useState(false)
     const [rotation, setRotation] = useState(0)
     const [result, setResult] = useState<number>(0)
+    // const [targetSegmentIndex, setTargetSegmentIndex] = useState((Math.random() * segments.length))
 
     const getWinningSegment = (finalRotation: number) => {
         // Normalize rotation to 0-360 degrees
@@ -39,28 +47,49 @@ const SpinWheel: React.FC<SpinWheelProps> = ({ onSpinEnd, locked = false }) => {
         return segments[segmentIndex]
     }
 
-    const handleSpin = () => {
-        if (isSpinning || locked) return
+    const handleSpin = async () => {
+        if (isSpinning) return
+        if (locked) {
+            toast.warn("Not enough free spin. Wait less than 2 hours to get free spin", { closeOnClick: true })
+            return
+        }
 
-        setIsSpinning(true)
-        setResult(0) // Clear previous result
+        try {
+            const prize = await getSpinPrize(user?.username || "")
+            await getUserSpinData(user?.username || "")
 
-        const newRotation = rotation + 3600 + Math.random() * 720 // 10-12 rounds
-        setRotation(newRotation)
+            console.log(prize)
+            console.log(userSpin)
 
-        setTimeout(() => {
-            setIsSpinning(false)
+            setIsSpinning(true)
+            setResult(0) // Clear previous result
 
-            // Calculate and display the winning segment
-            const winningSegment = getWinningSegment(newRotation)
-            setResult(winningSegment.value)
-            onSpinEnd(winningSegment.value)
-        }, 4000) // Longer animation time
+            const segmentAngle = 360 / segments.length
+            const additionalRotation = (segments.length - prize.index) * segmentAngle - (Math.random() * (segmentAngle - 5) + 5)
+
+            const prevRotation = rotation % 360
+
+            const newRotation = rotation + 3600 + additionalRotation - prevRotation // 10-12 rounds
+
+            setRotation(newRotation)
+
+            setTimeout(() => {
+                setIsSpinning(false)
+
+                // Calculate and display the winning segment
+                const winningSegment = getWinningSegment(newRotation)
+                setResult(winningSegment.value)
+                onSpinEnd(winningSegment.value)
+            }, 4000) // Longer animation time
+        }
+        catch (error) {
+            console.error(error)
+        }
     }
 
     return (
         <div
-            className={`flex flex-col items-center mb-8 ${isSpinning ? "cursor-not-allowed" : "cursor-pointer"}`}
+            className={`flex flex-col items-center mb-8 ${isSpinning || locked ? "cursor-not-allowed" : "cursor-pointer"}`}
             onClick={handleSpin}
         >
             <motion.div

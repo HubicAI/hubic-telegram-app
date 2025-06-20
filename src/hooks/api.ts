@@ -17,6 +17,20 @@ export const getUserById = async (username: string) => {
     }
 };
 
+export const getUserSpin = async (username: string) => {
+    try {
+        const res = await axios.post(`${base_url}/get-user-spin`, {
+            userid: username
+        })
+
+        return res.data
+    }
+    catch(error) {
+        console.error(error)
+        return null
+    }
+}
+
 export const getAllUsers = async () => {
     try {
         const { data } = await axios.get(`${base_url}/get-users`);
@@ -55,3 +69,75 @@ export const completeQuest = async (username: string, questId: string) => {
         return false;
     }
 };
+
+export const getSpinPrize = async (username: string): Promise<{amount: number, index: number}> => {
+    try {
+        const res = await axios.post(`${base_url}/spin`, {
+            userid: username
+        })
+
+        return res.data
+    }
+    catch(error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export const getUserQuests = async (userid: string, usertime: number) => {
+    try {
+        const res = await axios.post(`${base_url}/get-quests`, {
+            userid,
+            usertime
+        })
+
+        return res.data
+    }
+    catch(error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export const joinTelegramQuestComplete = async (userid: string) => {
+    try {
+        const res = await axios.post(`${base_url}/join-telegram`, {
+            userid
+        })
+
+        return res.data
+    }
+    catch(error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export const followXQuestComplete = async (userid: string) => {
+    try {
+        const res = await axios.post(`${base_url}/follow-x`, {
+            userid
+        })
+
+        return res.data
+    }
+    catch(error) {
+        console.error(error)
+        throw error
+    }
+}
+
+export const postXQuestComplete = async (userid: string, usertime: number) => {
+    try {
+        const res = await axios.post(`${base_url}/post-x`, {
+            userid,
+            usertime
+        })
+
+        return res.data
+    }
+    catch(error) {
+        console.error(error)
+        throw error
+    }
+}

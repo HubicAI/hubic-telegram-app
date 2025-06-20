@@ -46,17 +46,16 @@ const Leaderboard: FC<LeaderboardProps> = () => {
             />
 
             <div
-                className="rounded-[8px] h-[179px] w-full relative bg-[#202221] gap-2"
-                style={{ border: "0.6px solid #FFFFFF" }}
+                className="rounded-[8px] h-[179px] w-full relative bg-[#202221] gap-2 border-[1px] border-white border-opacity-30"
             >
                 <div className="grid grid-cols-3 justify-center items-center px-[5%]">
                     <div className="flex flex-col relative justify-center items-center top-[42%] z-10">
-                        <p className="text-[14px] font-[700] leading-[10.24px] text-[#039CF3]">
+                        <h1 className="text-[14px] font-[700] leading-[10.24px] text-[#039CF3]">
                             {users && users[1] && users[1].username}
-                        </p>
-                        <p className="text-[19px] leading-[31px] font-[700] text-[#039CF3]">
+                        </h1>
+                        <h1 className="text-[19px] leading-[31px] font-[700] text-[#039CF3]">
                             {users && users[1] && formatNumber(users[1].points)}
-                        </p>
+                        </h1>
                         <div
                             className="flex items-center justify-center rounded-full w-[47px] h-[47px]"
                             style={{ border: "1px solid #039CF3" }}
@@ -65,12 +64,12 @@ const Leaderboard: FC<LeaderboardProps> = () => {
                         </div>
                     </div>
                     <div className="flex flex-col relative justify-center items-center top-[30%] z-10">
-                        <p className="text-[14px] font-[700] leading-[10.24px] text-[#FF6A3C]">
+                        <h1 className="text-[14px] font-[700] leading-[10.24px] text-[#FF6A3C]">
                             {users && users[0] && users[0].username}
-                        </p>
-                        <p className="text-[19px] leading-[31px] font-[700] text-[#FF6A3C]">
+                        </h1>
+                        <h1 className="text-[19px] leading-[31px] font-[700] text-[#FF6A3C]">
                             {users && users[0] && formatNumber(users[0].points)}
-                        </p>
+                        </h1>
                         <div
                             className="flex items-center justify-center rounded-full w-[47px] h-[47px]"
                             style={{ border: "1px solid #FF6A3C" }}
@@ -79,12 +78,12 @@ const Leaderboard: FC<LeaderboardProps> = () => {
                         </div>
                     </div>
                     <div className="flex flex-col relative justify-center items-center top-[50%] z-10">
-                        <p className="text-[14px] font-[700] leading-[10.24px] text-[#01F079]">
+                        <h1 className="text-[14px] font-[700] leading-[10.24px] text-[#01F079]">
                             {users && users[2] && users[2].username}
-                        </p>
-                        <p className="text-[19px] leading-[31px] font-[700] text-[#01F079]">
+                        </h1>
+                        <h1 className="text-[19px] leading-[31px] font-[700] text-[#01F079]">
                             {users && users[2] && formatNumber(users[2].points)}
-                        </p>
+                        </h1>
                         <div
                             className="flex items-center justify-center rounded-full w-[47px] h-[47px]"
                             style={{ border: "1px solid #01F079" }}
@@ -101,8 +100,7 @@ const Leaderboard: FC<LeaderboardProps> = () => {
             </div>
 
             <div
-                className="w-full h-[78px] rounded-[8px] p-[13px] flex flex-col gap-1"
-                style={{ border: "0.5px solid #FFFFFF" }}
+                className="w-full h-[78px] rounded-[8px] p-[13px] flex flex-col gap-1 bg-white bg-opacity-20 backdrop-blur-[2px] border-[1px] border-white border-opacity-30"
             >
                 <p className="text-[33px] leading-[31px] font-[700] text-[#E879F9]">
                     {getUserRank()}
@@ -113,8 +111,7 @@ const Leaderboard: FC<LeaderboardProps> = () => {
             </div>
 
             <div
-                className="w-full h-[78px] rounded-[8px] p-[13px] flex flex-col gap-1"
-                style={{ border: "0.5px solid #FFFFFF" }}
+                className="w-full h-[78px] rounded-[8px] p-[13px] flex flex-col gap-1 bg-white bg-opacity-20 backdrop-blur-[2px] border-[1px] border-white border-opacity-30"
             >
                 <p className="text-[33px] leading-[31px] font-[700] text-[#E879F9]">
                     {formatNumber(Number(user?.points))}
@@ -137,9 +134,8 @@ const Leaderboard: FC<LeaderboardProps> = () => {
             </div> */}
 
             <table
-                className="w-full table-auto rounded-[8px]"
+                className="w-full table-auto rounded-[8px] bg-white bg-opacity-20 backdrop-blur-[2px] border-[1px] border-white border-opacity-30"
                 style={{
-                    border: "0.5px solid #D9D9D9",
                     borderCollapse: "separate",
                 }}
             >
